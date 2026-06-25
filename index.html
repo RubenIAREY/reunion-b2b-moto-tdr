@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reunión B2B Moto &amp; TDR · Acta y reparto de tareas · Reynasa</title>
+<style>
+  /* ===== Tokens corporativos Reynasa ===== */
+  :root{
+    --bg:#0E0E10; --panel:#15161A; --card:#1C1E24; --card2:#202329;
+    --line:#2A2D35; --line2:#363A44;
+    --text:#F2F2F2; --muted:#A8AEB8; --muted2:#7C828D;
+    --red:#CE0E2D; --amber:#FFA400; --blue:#004A98; --blue-l:#2E7BD6;
+    --ok:#27C28B;
+    --sidebar-w:264px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--sans); font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--amber)}
+  ::selection{background:var(--amber); color:#1a1300}
+
+  /* ===== Layout ===== */
+  .shell{display:flex; min-height:100vh}
+  .sidebar{
+    width:var(--sidebar-w); flex:0 0 var(--sidebar-w);
+    background:var(--panel); border-right:1px solid var(--line);
+    position:sticky; top:0; height:100vh; overflow-y:auto; padding:22px 16px;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .main{flex:1 1 auto; min-width:0; padding:28px clamp(16px,4vw,46px) 60px}
+  .wrap{max-width:1180px; margin:0 auto}
+
+  /* ===== Brand / sidebar ===== */
+  .brand{display:flex; align-items:center; gap:11px}
+  .brand__plate{
+    background:#fff; border-radius:10px; padding:9px 11px; line-height:0;
+    box-shadow:0 1px 0 rgba(255,255,255,.06);
+  }
+  .brand__plate img{height:30px; width:auto; display:block}
+  .brand__fallback{font-family:var(--sans); font-weight:800; color:#111; font-size:15px; letter-spacing:.5px}
+  .brand__fallback b{color:var(--red)}
+  .brand__sub{font-size:11px; color:var(--muted2); letter-spacing:.12em; text-transform:uppercase}
+
+  .nav{display:flex; flex-direction:column; gap:2px}
+  .nav a{
+    display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--muted);
+    padding:9px 11px; border-radius:8px; font-size:13.5px; font-weight:500;
+    border-left:2px solid transparent; transition:background .15s,color .15s;
+  }
+  .nav a:hover{background:var(--card); color:var(--text)}
+  .nav a.is-active{background:var(--card); color:#fff; border-left-color:var(--amber)}
+  .nav a .n{font-family:var(--mono); font-size:11px; color:var(--muted2); min-width:18px}
+  .nav a.is-active .n{color:var(--amber)}
+
+  .side-foot{margin-top:auto; font-size:11px; color:var(--muted2); border-top:1px solid var(--line); padding-top:14px; line-height:1.5}
+  .conf-tag{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.1em;
+    color:var(--red); border:1px solid var(--red); border-radius:5px; padding:2px 7px; margin-bottom:8px}
+
+  /* ===== Header ===== */
+  .topbar{display:flex; gap:5px; margin:-28px clamp(-16px,-4vw,-46px) 26px; height:4px}
+  .topbar span{flex:1}
+  .topbar span:nth-child(1){background:#000}
+  .topbar span:nth-child(2){background:var(--blue)}
+  .topbar span:nth-child(3){background:var(--red)}
+  .topbar span:nth-child(4){background:var(--amber)}
+
+  .head{margin-bottom:26px}
+  .head h1{font-size:clamp(24px,3.4vw,33px); line-height:1.12; margin:0 0 6px; font-weight:800; letter-spacing:-.01em}
+  .head .lede{color:var(--muted); font-size:15px; max-width:62ch; margin:0 0 16px}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 22px; font-size:13px; color:var(--muted)}
+  .meta b{color:var(--text); font-weight:600}
+  .meta .mono{font-family:var(--mono)}
+
+  .people{margin-top:16px}
+  .people h4{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted2); margin:0 0 8px; font-weight:700}
+  .chips{display:flex; flex-wrap:wrap; gap:7px}
+  .chip{font-size:12.5px; background:var(--card); border:1px solid var(--line); border-radius:999px; padding:4px 11px; color:var(--text)}
+  .chip small{color:var(--muted2); font-size:11px}
+  .note{font-size:12px; color:var(--muted2); margin-top:9px; font-style:italic}
+
+  /* ===== Sections ===== */
+  section{scroll-margin-top:18px; margin-bottom:38px}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin:0 0 16px; padding-bottom:10px; border-bottom:1px solid var(--line)}
+  .sec-head .k{font-family:var(--mono); font-size:12px; color:var(--amber)}
+  .sec-head h2{font-size:19px; margin:0; font-weight:700; letter-spacing:-.01em}
+  .sec-head .cnt{margin-left:auto; font-size:12px; color:var(--muted2); font-family:var(--mono)}
+
+  /* ===== KPI cards ===== */
+  .kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px}
+  .kpi{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 17px; position:relative; overflow:hidden}
+  .kpi::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--blue)}
+  .kpi.k-warn::before{background:var(--amber)} .kpi.k-bad::before{background:var(--red)} .kpi.k-good::before{background:var(--ok)}
+  .kpi .lbl{font-size:11.5px; color:var(--muted); letter-spacing:.03em; text-transform:uppercase; font-weight:600}
+  .kpi .val{font-family:var(--mono); font-size:27px; font-weight:700; margin:6px 0 2px; line-height:1}
+  .kpi .val.bad{color:#ff5a6e} .kpi .val.good{color:var(--ok)} .kpi .val.warn{color:var(--amber)}
+  .kpi .hint{font-size:12px; color:var(--muted2)}
+
+  /* ===== Accordion (temas) ===== */
+  .acc{display:flex; flex-direction:column; gap:9px}
+  .item{background:var(--card); border:1px solid var(--line); border-radius:11px; overflow:hidden}
+  .item>summary{
+    list-style:none; cursor:pointer; padding:14px 16px; display:flex; align-items:center; gap:12px;
+    font-weight:600; font-size:15px; user-select:none;
+  }
+  .item>summary::-webkit-details-marker{display:none}
+  .item>summary:hover{background:var(--card2)}
+  .item .tnum{font-family:var(--mono); font-size:12px; color:var(--muted2); min-width:26px}
+  .item .ttl{flex:1 1 auto}
+  .item .caret{color:var(--muted2); transition:transform .2s; font-size:13px}
+  .item[open] .caret{transform:rotate(90deg)}
+  .item .body{padding:2px 16px 16px 54px; color:var(--muted); font-size:14px; border-top:1px solid var(--line)}
+  .item .body p{margin:12px 0 0}
+  .item .body ul{margin:11px 0 0; padding-left:18px}
+  .item .body li{margin:5px 0}
+  .item .body b{color:var(--text); font-weight:600}
+
+  /* brand pill */
+  .brandpill{font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.06em; padding:3px 8px; border-radius:5px; border:1px solid; white-space:nowrap}
+  .b-rey{color:#ff7184; border-color:#5a2630; background:rgba(206,14,45,.12)}
+  .b-tdr{color:var(--amber); border-color:#5a4410; background:rgba(255,164,0,.10)}
+  .b-amb{color:var(--blue-l); border-color:#1d3a5c; background:rgba(46,123,214,.12)}
+
+  /* ===== Decisiones list ===== */
+  .dlist{display:grid; gap:10px}
+  .drow{display:flex; gap:13px; background:var(--card); border:1px solid var(--line); border-left:3px solid var(--ok); border-radius:10px; padding:13px 15px}
+  .drow .id{font-family:var(--mono); font-size:12px; color:var(--ok); min-width:40px; padding-top:1px}
+  .drow .tx{flex:1}
+  .drow .tx b{color:#fff}
+
+  .plist .prow{border-left-color:var(--blue)}
+  .plist .prow .id{color:var(--blue-l)}
+
+  /* ===== Tasks table ===== */
+  .toolbar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px}
+  .toolbar input[type=search], .toolbar select{
+    background:var(--card); border:1px solid var(--line2); color:var(--text); border-radius:8px;
+    padding:9px 11px; font-size:13.5px; font-family:var(--sans); outline:none;
+  }
+  .toolbar input[type=search]{flex:1 1 220px; min-width:180px}
+  .toolbar input[type=search]:focus, .toolbar select:focus{border-color:var(--amber)}
+  .toolbar select{cursor:pointer}
+  .btn{background:var(--amber); color:#1a1300; border:none; border-radius:8px; padding:9px 14px; font-weight:700; font-size:13.5px; cursor:pointer; font-family:var(--sans)}
+  .btn:hover{filter:brightness(1.07)}
+  .btn.ghost{background:transparent; color:var(--muted); border:1px solid var(--line2)}
+  .btn.ghost:hover{color:var(--text); border-color:var(--muted2)}
+
+  .progress{display:flex; align-items:center; gap:12px; margin:0 0 16px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 15px}
+  .progress .bar{flex:1; height:9px; background:#0a0b0d; border-radius:999px; overflow:hidden; border:1px solid var(--line)}
+  .progress .bar i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--amber),var(--ok)); transition:width .35s}
+  .progress .lab{font-family:var(--mono); font-size:13px; color:var(--muted); white-space:nowrap}
+  .progress .lab b{color:#fff}
+
+  .table-wrap{border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  thead th{background:var(--panel); text-align:left; padding:11px 13px; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); font-weight:700; border-bottom:1px solid var(--line); white-space:nowrap}
+  tbody td{padding:12px 13px; border-bottom:1px solid var(--line); vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr{border-left:3px solid transparent}
+  tbody tr.p-alta{border-left-color:var(--red)}
+  tbody tr.p-media{border-left-color:var(--amber)}
+  tbody tr.p-baja{border-left-color:var(--blue)}
+  tbody tr:hover{background:var(--card)}
+  tbody tr.done{opacity:.5}
+  tbody tr.done .task-txt{text-decoration:line-through; text-decoration-color:var(--muted2)}
+
+  .tid{font-family:var(--mono); font-size:11px; color:var(--muted2); display:block; margin-bottom:3px}
+  .task-txt{color:var(--text)}
+  .task-dep{display:block; font-size:11.5px; color:var(--muted2); margin-top:4px}
+  .task-dep b{color:var(--muted)}
+  .col-task{min-width:300px}
+  .resp{color:var(--text)} .resp.nd{color:var(--muted2)}
+
+  .area{font-size:12px; color:var(--muted); white-space:nowrap}
+  .prio{display:inline-flex; align-items:center; gap:7px; font-size:12.5px; white-space:nowrap}
+  .dot{width:9px; height:9px; border-radius:50%; flex:0 0 9px}
+  .dot.alta{background:var(--red)} .dot.media{background:var(--amber)} .dot.baja{background:var(--blue-l)}
+  .fecha{font-family:var(--mono); font-size:12px; color:var(--muted); white-space:nowrap}
+  .fecha.nd{color:var(--muted2)}
+
+  .status{display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none}
+  .status input{appearance:none; -webkit-appearance:none; width:17px; height:17px; border:1.5px solid var(--line2); border-radius:5px; background:var(--bg); cursor:pointer; position:relative; flex:0 0 17px}
+  .status input:checked{background:var(--ok); border-color:var(--ok)}
+  .status input:checked::after{content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#04130d; font-weight:900}
+  .status .lab{font-size:12px; color:var(--muted); white-space:nowrap}
+  .st-pend .lab{color:var(--muted)} .st-curso .lab{color:var(--amber)} .st-hecho .lab{color:var(--ok)}
+
+  .empty{padding:34px; text-align:center; color:var(--muted2); font-size:14px}
+
+  /* ===== Risks ===== */
+  .risks{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:12px}
+  .risk{background:var(--card); border:1px solid var(--line); border-left:3px solid var(--red); border-radius:10px; padding:13px 15px}
+  .risk .rid{font-family:var(--mono); font-size:11px; color:#ff7184; font-weight:700}
+  .risk p{margin:5px 0 0; font-size:13.5px; color:var(--muted)}
+  .risk p b{color:var(--text)}
+  .risk.rgpd{border-left-color:var(--amber)} .risk.rgpd .rid{color:var(--amber)}
+
+  /* ===== Next steps ===== */
+  .steps{display:grid; gap:9px}
+  .step{display:flex; gap:13px; align-items:flex-start; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:13px 15px}
+  .step .when{font-family:var(--mono); font-size:11px; font-weight:700; color:var(--amber); background:rgba(255,164,0,.1); border:1px solid #5a4410; border-radius:6px; padding:3px 8px; white-space:nowrap; min-width:118px; text-align:center}
+  .step .tx{flex:1; font-size:14px}
+  .step .tx b{color:#fff}
+
+  .legend{display:flex; flex-wrap:wrap; gap:14px 20px; font-size:12px; color:var(--muted); margin-top:14px; padding-top:14px; border-top:1px solid var(--line)}
+  .legend span{display:inline-flex; align-items:center; gap:7px}
+
+  footer{margin-top:46px; padding-top:18px; border-top:1px solid var(--line); font-size:12px; color:var(--muted2); display:flex; flex-wrap:wrap; gap:6px 18px; justify-content:space-between}
+
+  /* mobile nav toggle */
+  .mnav{display:none}
+
+  /* ===== Responsive ===== */
+  @media (max-width:920px){
+    .shell{flex-direction:column}
+    .sidebar{position:static; width:auto; height:auto; flex-direction:row; align-items:center; gap:14px; flex-wrap:wrap; padding:14px 16px}
+    .sidebar .nav, .sidebar .side-foot{display:none}
+    .sidebar.open .nav{display:flex; width:100%; order:3}
+    .sidebar.open .side-foot{display:block; width:100%; order:4}
+    .mnav{display:inline-flex; margin-left:auto}
+    .main{padding:20px 16px 50px}
+    .topbar{margin:-20px -16px 22px}
+    .col-task{min-width:0}
+    .table-wrap{overflow-x:auto}
+    table{min-width:780px}
+  }
+
+  /* ===== Print ===== */
+  @media print{
+    :root{--bg:#fff; --panel:#fff; --card:#fff; --card2:#fff; --text:#111; --muted:#333; --muted2:#666; --line:#ccc; --line2:#bbb}
+    body{font-size:11px}
+    .sidebar,.toolbar,.mnav,.btn,.topbar{display:none !important}
+    .main{padding:0}
+    .item{break-inside:avoid} .item .body{display:block !important}
+    .item .caret{display:none}
+    .kpi,.risk,.drow,.step,.item{box-shadow:none}
+    .head h1{color:#000}
+    a{color:#000; text-decoration:underline}
+    section{margin-bottom:18px}
+    tbody tr.done{opacity:1}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand__plate">
+        <img src="./logo-reynasa.png" alt="Reynasa Recambios"
+             onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=&quot;brand__fallback&quot;><b>●</b> REYNASA</span>')">
+      </div>
+    </div>
+    <button class="btn ghost mnav" onclick="document.getElementById('sidebar').classList.toggle('open')">☰ Menú</button>
+    <nav class="nav" id="nav">
+      <a href="#resumen"><span class="n">01</span> Resumen</a>
+      <a href="#kpis"><span class="n">02</span> Indicadores</a>
+      <a href="#temas"><span class="n">03</span> Temas tratados</a>
+      <a href="#decisiones"><span class="n">04</span> Decisiones</a>
+      <a href="#tareas"><span class="n">05</span> Reparto de tareas</a>
+      <a href="#riesgos"><span class="n">06</span> Riesgos y bloqueos</a>
+      <a href="#pasos"><span class="n">07</span> Próximos pasos</a>
+    </nav>
+    <div class="side-foot">
+      <span class="conf-tag">USO INTERNO · CONFIDENCIAL</span><br>
+      Reynasa Recambios · Proyecto Optimización de Procesos. Acta generada a partir de la transcripción de la sesión.
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+    <div class="topbar"><span></span><span></span><span></span><span></span></div>
+    <div class="wrap">
+
+      <!-- HEADER -->
+      <header class="head" id="resumen">
+        <h1>Reunión B2B Moto &amp; TDR</h1>
+        <p class="lede">Acta de la sesión y reparto de tareas: estado del proyecto B2B Moto de Reynasa, evolución de TDR (todoenrecambio.com), web de neumáticos, canales marketplace y acuerdos económicos internos.</p>
+        <div class="meta">
+          <span>Fecha: <b>Junio 2026</b> <span class="mono">(fecha exacta: ND)</span></span>
+          <span>Cierre: <b>~22:00</b> <span class="mono">(ref. «son casi las 10»)</span></span>
+          <span>Ámbito: <b>Reynasa · TDR</b></span>
+          <span>Tareas: <b class="mono">35</b></span>
+        </div>
+
+        <div class="people">
+          <h4>En la sala (intervienen / aludidos)</h4>
+          <div class="chips">
+            <span class="chip">Rubén <small>· e-commerce y automatización IA</small></span>
+            <span class="chip">Juan <small>· moto / catálogo</small></span>
+            <span class="chip">David <small>· precios / revisión</small></span>
+            <span class="chip">Patricia <small>· contenido / marketing</small></span>
+            <span class="chip">Iván <small>· desarrollo / plataforma</small></span>
+            <span class="chip">Antonio</span>
+            <span class="chip">Hugo</span>
+            <span class="chip">Montoya</span>
+            <span class="chip">Alicia</span>
+            <span class="chip">Luis Miguel</span>
+          </div>
+          <h4 style="margin-top:14px">Terceros y proveedores citados</h4>
+          <div class="chips">
+            <span class="chip">Diego <small>· Service Next</small></span>
+            <span class="chip">Roca <small>· Service Next</small></span>
+            <span class="chip">Enrique <small>· decisor de prioridad</small></span>
+            <span class="chip">Susana <small>· requerimientos</small></span>
+            <span class="chip">Esperanza <small>· RRHH</small></span>
+            <span class="chip">Gerardo <small>· freelance web</small></span>
+            <span class="chip">Javi</span>
+            <span class="chip">Jorge</span>
+            <span class="chip">Elena</span>
+            <span class="chip">Claudia</span>
+          </div>
+          <p class="note">Atribución aproximada: la transcripción es voz a texto y no etiqueta a los locutores. Roles inferidos por contexto; ND donde no consta.</p>
+        </div>
+      </header>
+
+      <!-- RESUMEN EJECUTIVO -->
+      <section>
+        <div class="sec-head"><span class="k">RESUMEN</span><h2>Lo esencial</h2></div>
+        <ul style="margin:0; padding-left:20px; color:var(--muted); font-size:14.5px; line-height:1.7">
+          <li>El <b>test del B2B Moto de Reynasa</b> se da por <b>completado con éxito</b> (23 clientes, ~50% nuevos). Pasa a producción esta semana, con módulo híbrido TecDoc + X3 y un buscador con trazabilidad total del vehículo (matrícula, marca/modelo y bastidor).</li>
+          <li><b>TDR ha perdido conversión</b> tras integrar el catálogo de coche: del 2%+ histórico al 0,70% en mayo, recuperando al 0,96%. El tráfico y el SEO crecen, pero hay que <b>reestructurar conceptualmente</b> la plataforma y mejorar el rendimiento.</li>
+          <li>Se aprueba internamente <b>desarrollar una nueva plataforma TDR desde cero</b> (interna, ~2 meses), reutilizando módulos; la actual arrastra 4 capas de código y problemas de rendimiento.</li>
+          <li>Exigencia de la mutua: <b>Reynasa facturará a TDR</b> por desarrollo (horas vía Asana) y por almacenamiento/logística (tarifa por paquete).</li>
+          <li>Dos <b>riesgos RGPD</b> abiertos: el envío del comunicado masivo y el guardado de matrículas (dato sensible) sin aviso legal ni autorización.</li>
+          <li>En <b>marketplaces</b>, TDR/Demoto y Recambialia compiten entre sí en Amazon; se decide no competir consigo mismos y reducir la dependencia del 70% en Amazon.</li>
+        </ul>
+      </section>
+
+      <!-- KPIS -->
+      <section id="kpis">
+        <div class="sec-head"><span class="k">02</span><h2>Indicadores citados</h2></div>
+        <div class="kpis">
+          <div class="kpi k-bad">
+            <div class="lbl">Conversión TDR</div>
+            <div class="val bad">0,96%</div>
+            <div class="hint">2%+ histórico → 0,70% (mayo). Objetivo: recuperar &gt;2%.</div>
+          </div>
+          <div class="kpi k-good">
+            <div class="lbl">Páginas indexadas TDR</div>
+            <div class="val good">269.000</div>
+            <div class="hint">Desde 50.000 en un mes. Objetivo: +300.000 controlado.</div>
+          </div>
+          <div class="kpi k-warn">
+            <div class="lbl">Autoridad de dominio TDR</div>
+            <div class="val warn">11 → 22</div>
+            <div class="hint">Objetivo media de mercado: 30+ (a final de año).</div>
+          </div>
+          <div class="kpi k-good">
+            <div class="lbl">Salud cuenta Amazon</div>
+            <div class="val good">700<span style="font-size:16px;color:var(--muted2)">/1000</span></div>
+            <div class="hint">Operativa, catálogo y envíos «muy sanos».</div>
+          </div>
+          <div class="kpi k-bad">
+            <div class="lbl">Dependencia de Amazon</div>
+            <div class="val bad">~70%</div>
+            <div class="hint">Resto: Autodoc + Google Ads/TDR (&lt;30%).</div>
+          </div>
+          <div class="kpi k-good">
+            <div class="lbl">Test B2B Moto</div>
+            <div class="val good">23</div>
+            <div class="hint">clientes en prueba, ~50% nuevos. Test = éxito.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEMAS -->
+      <section id="temas">
+        <div class="sec-head"><span class="k">03</span><h2>Temas tratados</h2><span class="cnt">19 bloques</span></div>
+        <div class="acc">
+
+          <details class="item"><summary><span class="tnum">01</span><span class="ttl">Test del B2B Moto y método de pago</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>23 clientes en la fase de prueba (la mitad nuevos, sin contaminar). Funciona bien y el test se da por completado.</p>
+              <ul>
+                <li>Se decide <b>retirar el «pago al recibir»</b> cuando el envío va por mensajería externa; se mantiene solo con reparto propio (Madrid), configurado por cliente en X3.</li>
+                <li>Al cambiarlo, hay que avisar a todas las tiendas: pueden salir <b>facturas con «PAGADO»</b> que no deben volver a cobrarse a 15 días.</li>
+                <li>En debate (no cerrado): pasarela que guarde la tarjeta del cliente para futuros pedidos.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">02</span><span class="ttl">Altas de clientes y formulario de registro</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Se han registrado por el formulario público <b>dos talleres desconocidos</b> (Badajoz y Valladolid) sin acción comercial. Solo talleres profesionales (B2B).</p>
+              <ul>
+                <li>Flujo: formulario → e-mail a Juan, que verifica CIF y documentación → clientes da de alta → método de pago contado/Gasena por defecto. Para cambiarlo, pasan por el flujo de crédito.</li>
+                <li><b>Riesgo de cuello de botella:</b> Juan verifica cada alta manualmente; no escala.</li>
+                <li>Idea: vídeo explicativo del alta para enviar al cliente.</li>
+                <li>Comunicado masivo a la base de datos en debate, <b>bloqueado por RGPD</b> (no enviar a &gt;3 destinatarios visibles; los datos se sacaron de fuentes públicas).</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">03</span><span class="ttl">Flujo de pedidos a fabricante / almacenes reguladores</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>El stock de almacenes reguladores ya se muestra, pero el flujo SEPT en X3 <b>todavía no se dispara</b> desde el pedido. Pendiente de activar como debe.</p>
+              <ul>
+                <li>Cuidado con a quién se permite (clientes sincronizados, no contado) para evitar devoluciones e impagos de portes.</li>
+                <li>Escapes MIVV: solo a la venta artículos &gt;100&nbsp;€ (para que el proveedor pague portes); el resto, bajo pedido.</li>
+                <li>Envío personalizado por zona: Portugal y Baleares siempre con portes; Canarias y Ceuta bloqueados (lo tramita el cliente).</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">04</span><span class="ttl">Lotes y precios por volumen</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Implementados lotes (descuento por volumen), visibles solo para clientes registrados. Inspirado en Euromoto: dar al pequeño la posibilidad de comprar a precio de grande si compra cantidad.</p>
+              <ul><li>Arranca con baterías Baica y aceite Valvoline; se ampliará a todo lo que sea susceptible. Ya probado y funcionando.</li></ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">05</span><span class="ttl">Módulo híbrido TecDoc + X3 (desarrollo diferencial)</span><span class="brandpill b-amb">AMBAS</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Se fusiona la información de TecDoc con los datos propios de X3 (compatibilidades de moto que mete Juan). Es un desarrollo innovador que la competencia no tiene: tiran solo de TecDoc o de base propia.</p>
+              <ul>
+                <li>Los datos se vuelcan por <b>tablas intermedias</b> (no consulta X3 en tiempo real); actualización manual o programada.</li>
+                <li>Login con el mismo usuario/contraseña de la web de neumáticos. <b>Punto sin cerrar:</b> hay desacuerdo sobre si las credenciales son las mismas; el 90% de clientes no recuerda su contraseña.</li>
+                <li>En B2B se integró como «Moto X3» en RRP; en TDR se fusionó directamente.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">06</span><span class="ttl">Buscador por matrícula, vehículo y garaje</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Soluciona el problema histórico de «perder» el vehículo al cambiar de categoría: ahora hay <b>trazabilidad total</b>, el vehículo se arrastra por cookies y el usuario no se pierde. Optimizado para móvil.</p>
+              <ul>
+                <li>Vías de búsqueda: rápida, matrícula, marca/modelo (nativa TecDoc) y <b>por bastidor/chasis</b> (destacado como muy superior a la competencia; encuentra claves como RC45 o boogies Polaris RZR).</li>
+                <li>Garaje de hasta 16 motos / 16 coches / 16 furgonetas; guarda la matrícula y saca el CATI para Juan.</li>
+                <li>Contador de matrículas restringido; ahora 1 minuto entre consultas en modo abierto.</li>
+                <li>Imágenes de modelos subiéndose (39.700 series, 13.000 modelos); las series de Juan aún no se muestran bien.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">07</span><span class="ttl">Matrícula como dato sensible · RGPD</span><span class="brandpill b-amb">AMBAS</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>La matrícula es un <b>dato sensible</b>: guardarla requiere autorización del usuario. Hay que añadirlo al aviso legal y avisar al delegado de protección de datos.</p>
+              <ul>
+                <li>En modo abierto se guarda la matrícula de cualquiera (riesgo); se restringirá por usuario/grupo el próximo mes.</li>
+                <li>Ventaja: guardar la matrícula evita reconsultar a DGT/Sertec (solo se consulta la primera vez).</li>
+                <li>Necesidad operativa: informe de quién gasta matrículas y compra o no (ya es extraíble).</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">08</span><span class="ttl">Modularidad y reutilización de componentes</span><span class="brandpill b-amb">AMBAS</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Todo se ha construido modular y reutilizable (tablas y bloques portables). Desde el back office se puede activar/desactivar el buscador de matrícula, cambiar el interfaz (colores, vídeos de fondo, iconos) y llevar los módulos a cualquier otra plataforma.</p>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">09</span><span class="ttl">Integración con Service Next / NextGo</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Hay que hablar con Service Next para poner un <b>acceso a moto dentro de NextGo</b>: el cliente de coche verá una pestaña de moto y, al pulsar, hará autologin en la web de moto de Reynasa.</p>
+              <ul><li>Solo accede quien sea cliente de Reynasa / socio de Sertec y esté logueado; un tercero no podrá comprar recambio de moto.</li></ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">10</span><span class="ttl">TDR: activación de Tedo Moto y caída de conversión</span><span class="brandpill b-tdr">TDR</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Desde el 20 de mayo, TDR incorpora moto en formato híbrido (matrícula coche y moto, modelo, garaje, categorías, filtros). Pero la conversión cayó del 2%+ al 0,70% (mayo), recuperando al 0,96%.</p>
+              <ul>
+                <li>Tres causas técnicas detectadas y corregidas: incidencia en el responsive, sustitución del teléfono por la burbuja (penalizó), y un problema en los productos subidos a Merchant (Shopping).</li>
+                <li>Acciones: caché, Cloudflare (pendiente de afinar), supercategorías y packs para subir el carrito medio.</li>
+                <li>Causa de fondo: integrar coche desestabilizó la web; hace falta estudio de usabilidad y reestructuración conceptual de la Home y los buscadores.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">11</span><span class="ttl">TDR: catálogo coche vs moto y calidad SEO de fichas</span><span class="brandpill b-tdr">TDR</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>El catálogo de moto se ha trabajado «con mimo» (~50% según Juan); el de coche viene de TecDoc y arrastra artículos de bajo valor (grapas de paragolpes, etc.) que no aportan y ensucian resultados.</p>
+              <ul>
+                <li>Hay una herramienta tipo Yoast que puntúa el SEO de cada ficha: coche al 90% optimizado, con 60.000 descripciones generadas. Se genera contenido e imágenes de categorías y fabricantes masivamente.</li>
+                <li>Para llevar esa puntuación a moto hay que <b>adecuar el catálogo de X3</b> al e-commerce (p. ej. permitir etiquetas HTML en campos).</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">12</span><span class="ttl">TDR: SEO técnico, indexación y autoridad</span><span class="brandpill b-tdr">TDR</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Limpiados errores de Search Console y optimizada la subida de sitemaps. Indexación de 50.000 a 269.000 páginas en un mes (controlado; el total teórico eran 21M), con objetivo de +300.000.</p>
+              <ul>
+                <li>Link building activo: tres noticias publicadas apuntando a TDR. Autoridad de dominio de 11 a 22 (objetivo 30+).</li>
+                <li>Tráfico orgánico y keywords en top 3 subiendo, pero la conversión no acompaña: «hacemos todo bien pero no vendemos».</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">13</span><span class="ttl">TDR: redes sociales y automatización IA</span><span class="brandpill b-tdr">TDR</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Siguiente salto de automatización IA: enriquecer el contenido de redes sociales para <b>sustituir el recurso de pago actual</b>. Se espera dar con ello esta semana y reorientar la colaboración a algo puntual.</p>
+              <ul><li>Después: estrategia de crecimiento en redes (se verá en otra reunión).</li></ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">14</span><span class="ttl">TDR: nueva plataforma desde cero</span><span class="brandpill b-tdr">TDR</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Se propone (y se respalda internamente) desarrollar una <b>nueva plataforma TDR desde cero, en casa</b>. La actual arrastra cuatro capas de código y problemas de rendimiento (caída de servidor el mismo día; PHP a revisar).</p>
+              <ul>
+                <li>Reutiliza ~30 módulos ya hechos y la plantilla (pagada en 100&nbsp;€). Diseño por perfil de cliente: coche, moto, aceites, neumáticos, cascos, con menú y carrito laterales.</li>
+                <li>Objetivo: web a 5–10 años. Plazo estimado: ~2 meses. Patricia muestra reservas; el equipo defiende la decisión.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">15</span><span class="ttl">Financiero: cobros de Reynasa a TDR</span><span class="brandpill b-amb">AMBAS</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>La mutua exige que Reynasa cobre a TDR por dos conceptos, lo que impactará en la cuenta de TDR:</p>
+              <ul>
+                <li><b>Desarrollo técnico:</b> imputar las horas del equipo (vía Asana) y facturarlas a precio de mercado por hora.</li>
+                <li><b>Almacenamiento/logística:</b> tarifa por paquete a precio de mercado (se citó como ejemplo 0,25&nbsp;€).</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">16</span><span class="ttl">Web de neumáticos e integración con proveedores</span><span class="brandpill b-rey">REYNASA</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Debate sobre usar la web de neumáticos de Service Next o desarrollar la propia. La de Service Next es B2C y le falta lo esencial: B2B, suplantación de cliente por el call center, presupuestos, compartir stock y recibir pedidos. Todo eso tendrían que desarrollarlo.</p>
+              <ul>
+                <li>Documento de requerimientos hecho por Susana: hay que entregárselo y verificar qué cumplen.</li>
+                <li>Problemas actuales sobre todo con <b>Bristone (Bridgestone)</b> por cómo manda los ficheros. La web la mantiene el freelance Gerardo (riesgo de dependencia).</li>
+                <li>Prioridad: dar visibilidad al stock del almacén de Allovera; los pedidos podrían crearse a un cliente concreto y gestionarse internamente (hay logística disponible allí).</li>
+                <li>Autonomía: si Service Next no desarrolla, Reynasa irá por su cuenta. Para empujar prioridades hay que hablar con Enrique.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">17</span><span class="ttl">Marketplaces: Amazon, Autodoc, Miravia / AliExpress</span><span class="brandpill b-tdr">TDR</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Bajada de ventas en Amazon en mayo (estacional + competencia interna: TDR/Demoto y Recambialia compiten entre sí y se bajan el precio). Cuenta Amazon muy sana (700/1000).</p>
+              <ul>
+                <li>Cambio de precios en el 58% de los ASIN críticos (David) en seguimiento. Correo a Diego para repricing y para dejar de competir consigo mismos.</li>
+                <li>Miravia/AliExpress: reunión de contacto; los grandes del sector ahí son Urgi y Aumovesa. Decisión: completar el catálogo de Recambialia con producto propio, no a la inversa, y no competir entre marcas del grupo.</li>
+                <li>Demoto en Autodoc usa el cliente genérico 17906; conviene crear uno específico para mejorar la extracción de datos.</li>
+                <li>Dependencia del 70% en Amazon: el objetivo es crecer la marca TDR con una estrategia a 2 años y reducir marketplaces.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">18</span><span class="ttl">Equipo: nuevo perfil y delegación</span><span class="brandpill b-amb">AMBAS</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Se perfila la contratación para contenido. Como Rubén ha avanzado en automatización IA, el perfil podría ser más técnico y con conocimiento de moto.</p>
+              <ul>
+                <li>Juan necesita una «mano derecha» que asuma parte de su trabajo de oficina para poder salir a vender. Hará una lista de tareas y lo verá con Esperanza (RRHH).</li>
+                <li>Preferencia: buscar a alguien conocido del mercado antes que en portales de empleo.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="item"><summary><span class="tnum">19</span><span class="ttl">Enriquecimiento de contenido moto</span><span class="brandpill b-amb">AMBAS</span><span class="caret">▶</span></summary>
+            <div class="body">
+              <p>Patricia quiere revisar con Juan cómo se enriquece el contenido y buscar un método más óptimo. Hoy gran parte es manual (uno a uno): plásticos KTM, escapes MIVV, Galfer… con color, aplicaciones y compatibilidad de moto.</p>
+              <ul>
+                <li>MIVV se dio de alta (compleja, cuatro días, con ficheros) pero no se ve por un problema. Galfer/Hacervice llegan por ficheros del comercial.</li>
+                <li>Se pueden subir descripciones masivamente por CSV, pero la compatibilidad y las variaciones de color siguen exigiendo trabajo manual; se busca apoyarse más en IA.</li>
+              </ul>
+            </div>
+          </details>
+
+        </div>
+      </section>
+
+      <!-- DECISIONES -->
+      <section id="decisiones">
+        <div class="sec-head"><span class="k">04</span><h2>Decisiones</h2><span class="cnt">10 acordadas · 5 en debate</span></div>
+        <div class="dlist" style="margin-bottom:18px">
+          <div class="drow"><span class="id">D-01</span><span class="tx"><b>Test B2B Moto completado</b> y declarado un éxito; pasa a producción.</span></div>
+          <div class="drow"><span class="id">D-02</span><span class="tx"><b>Retirar el «pago al recibir»</b> en envíos por mensajería externa; mantenerlo solo con reparto propio (Madrid).</span></div>
+          <div class="drow"><span class="id">D-03</span><span class="tx"><b>Implementar lotes</b> (precio por volumen) solo para clientes registrados; empezar por baterías Baica y aceite Valvoline.</span></div>
+          <div class="drow"><span class="id">D-04</span><span class="tx"><b>Poner en producción</b> el módulo híbrido y la trazabilidad de vehículo en B2B Moto (hoy/mañana); comunicación la semana siguiente.</span></div>
+          <div class="drow"><span class="id">D-05</span><span class="tx"><b>Mantener Reynasa y TDR diferenciadas</b>: las webs no se deben parecer.</span></div>
+          <div class="drow"><span class="id">D-06</span><span class="tx"><b>Nueva plataforma TDR desde cero</b>, desarrollo interno (~2 meses), reutilizando módulos.</span></div>
+          <div class="drow"><span class="id">D-07</span><span class="tx"><b>Reynasa facturará a TDR</b> por desarrollo (horas) y por almacenamiento/logística (exigencia de la mutua).</span></div>
+          <div class="drow"><span class="id">D-08</span><span class="tx"><b>No competir consigo mismos en marketplace</b>: completar el catálogo de Recambialia con producto propio y reducir dependencia de Amazon.</span></div>
+          <div class="drow"><span class="id">D-09</span><span class="tx"><b>Autonomía en neumáticos</b>: si Service Next no desarrolla lo necesario, Reynasa irá por su cuenta.</span></div>
+          <div class="drow"><span class="id">D-10</span><span class="tx"><b>Reorientar el recurso de redes sociales</b> a colaboración puntual una vez automatizado el contenido.</span></div>
+        </div>
+
+        <h4 style="font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted2); margin:0 0 10px">En debate / sin cerrar</h4>
+        <div class="dlist plist">
+          <div class="drow prow"><span class="id">P-01</span><span class="tx">Pasarela que guarde la tarjeta del cliente para futuros pedidos.</span></div>
+          <div class="drow prow"><span class="id">P-02</span><span class="tx">Vídeo explicativo del alta para enviar al cliente.</span></div>
+          <div class="drow prow"><span class="id">P-03</span><span class="tx">Comunicado masivo a la base de datos para captar registros (condicionado a resolver el RGPD).</span></div>
+          <div class="drow prow"><span class="id">P-04</span><span class="tx">¿Mantener dos webs (TDR y Recambialia)? Se plantea elevarlo a un nivel superior.</span></div>
+          <div class="drow prow"><span class="id">P-05</span><span class="tx">Pasar los datos del híbrido a X3 o a terceros (p. ej. Autingo): posible, no prioritario.</span></div>
+        </div>
+      </section>
+
+      <!-- TAREAS -->
+      <section id="tareas">
+        <div class="sec-head"><span class="k">05</span><h2>Reparto de tareas</h2><span class="cnt" id="taskCount">35 tareas</span></div>
+
+        <div class="progress">
+          <span class="lab">Progreso: <b id="doneCount">0</b> / <span id="totalCount">35</span> hechas</span>
+          <span class="bar"><i id="progBar"></i></span>
+          <span class="lab" id="progPct">0%</span>
+        </div>
+
+        <div class="toolbar">
+          <input type="search" id="q" placeholder="Buscar tarea, responsable…" aria-label="Buscar tarea">
+          <select id="fMarca" aria-label="Filtrar por marca"><option value="">Marca: todas</option><option>Reynasa</option><option>TDR</option><option>Ambas</option></select>
+          <select id="fArea" aria-label="Filtrar por área"><option value="">Área: todas</option><option>B2B Moto</option><option>TDR</option><option>Neumáticos</option><option>Marketplace</option><option>Transversal</option></select>
+          <select id="fResp" aria-label="Filtrar por responsable"><option value="">Responsable: todos</option></select>
+          <select id="fPrio" aria-label="Filtrar por prioridad"><option value="">Prioridad: todas</option><option>Alta</option><option>Media</option><option>Baja</option></select>
+          <button class="btn ghost" id="resetBtn" type="button">Limpiar</button>
+          <button class="btn" id="printBtn" type="button">Imprimir / PDF</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="taskTable">
+            <thead>
+              <tr>
+                <th class="col-task">Tarea</th>
+                <th>Responsable</th>
+                <th>Área</th>
+                <th>Prioridad</th>
+                <th>Fecha límite</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="taskBody"><!-- render JS --></tbody>
+          </table>
+          <div class="empty" id="emptyRow" style="display:none">No hay tareas que coincidan con los filtros.</div>
+        </div>
+
+        <div class="legend">
+          <span><span class="dot alta"></span> Prioridad alta</span>
+          <span><span class="dot media"></span> Prioridad media</span>
+          <span><span class="dot baja"></span> Prioridad baja</span>
+          <span><span class="brandpill b-rey">REYNASA</span> línea Reynasa</span>
+          <span><span class="brandpill b-tdr">TDR</span> e-commerce TDR</span>
+          <span><span class="brandpill b-amb">AMBAS</span> transversal</span>
+        </div>
+        <p class="note">El estado marcado se guarda en este navegador. ND = no consta en la reunión.</p>
+      </section>
+
+      <!-- RIESGOS -->
+      <section id="riesgos">
+        <div class="sec-head"><span class="k">06</span><h2>Riesgos y bloqueos</h2><span class="cnt">12 detectados</span></div>
+        <div class="risks">
+          <div class="risk rgpd"><span class="rid">R-01 · RGPD</span><p><b>Comunicado masivo:</b> no se puede enviar a más de 3 destinatarios visibles y la base se obtuvo de fuentes públicas. Revisar la forma de envío.</p></div>
+          <div class="risk rgpd"><span class="rid">R-02 · RGPD</span><p><b>Matrícula = dato sensible:</b> se guarda sin autorización ni aviso legal. Falta cláusula y aviso al DPO.</p></div>
+          <div class="risk"><span class="rid">R-03 · Operativa</span><p><b>Cuello de botella en altas:</b> Juan verifica cada alta manualmente; no escala si entra volumen.</p></div>
+          <div class="risk"><span class="rid">R-04 · Legal</span><p><b>Licencia TecDoc:</b> la web de moto de Reynasa usa la licencia que paga TDR; se decidió no comunicarlo a terceros. Punto sensible a vigilar.</p></div>
+          <div class="risk"><span class="rid">R-05 · Negocio</span><p><b>Conversión TDR:</b> cayó del 2%+ al 0,70% tras integrar coche; recuperación lenta (0,96%).</p></div>
+          <div class="risk"><span class="rid">R-06 · Técnico</span><p><b>Plataforma TDR:</b> cuatro capas de código, caída de servidor el mismo día y PHP a revisar.</p></div>
+          <div class="risk"><span class="rid">R-07 · Negocio</span><p><b>Competencia interna en Amazon:</b> TDR/Demoto y Recambialia se bajan el precio mutuamente.</p></div>
+          <div class="risk"><span class="rid">R-08 · Negocio</span><p><b>Dependencia de Amazon:</b> ~70% de las ventas concentradas en un solo canal.</p></div>
+          <div class="risk"><span class="rid">R-09 · Operativa</span><p><b>Bus factor neumáticos:</b> la web depende del freelance Gerardo; problemas recurrentes con Bristone.</p></div>
+          <div class="risk"><span class="rid">R-10 · Catálogo</span><p><b>Artículos de bajo valor:</b> el catálogo de coche (TecDoc) incluye piezas que no aportan y ensucian resultados.</p></div>
+          <div class="risk"><span class="rid">R-11 · Financiero</span><p><b>Cuenta de TDR:</b> los cobros de Reynasa (desarrollo + logística) impactarán en su cuenta de resultados.</p></div>
+          <div class="risk"><span class="rid">R-12 · Operativa</span><p><b>Enriquecimiento manual:</b> el contenido de moto se trabaja uno a uno; no escala sin más automatización.</p></div>
+        </div>
+      </section>
+
+      <!-- PASOS -->
+      <section id="pasos">
+        <div class="sec-head"><span class="k">07</span><h2>Próximos pasos</h2></div>
+        <div class="steps">
+          <div class="step"><span class="when">Hoy / mañana</span><span class="tx">Poner en producción <b>B2B Moto</b> (trazabilidad de vehículo y nuevos buscadores).</span></div>
+          <div class="step"><span class="when">Esta semana</span><span class="tx">Cerrar la <b>automatización IA del contenido de redes</b> y resolver el problema de visibilidad de MIVV.</span></div>
+          <div class="step"><span class="when">Inmediato</span><span class="tx">Desactivar/ajustar <b>Bristone</b> y enviar el correo a Diego (repricing y competencia interna en Amazon).</span></div>
+          <div class="step"><span class="when">Semana que viene</span><span class="tx">Lanzar la <b>comunicación a clientes B2B Moto</b> (newsletter y, después, credenciales).</span></div>
+          <div class="step"><span class="when">~2 meses</span><span class="tx">Avanzar la <b>nueva plataforma TDR</b> en paralelo al estudio de usabilidad y la mejora de rendimiento.</span></div>
+          <div class="step"><span class="when">Pendiente dir.</span><span class="tx">Cerrar los <b>cobros Reynasa → TDR</b> (horas vía Asana + tarifa de logística).</span></div>
+          <div class="step"><span class="when">Próximas reuniones</span><span class="tx">Presentar la <b>estrategia de crecimiento de TDR a 2 años</b> y la estrategia de redes; coordinar marketplaces.</span></div>
+        </div>
+      </section>
+
+      <footer>
+        <span>Reynasa Recambios · Proyecto Optimización de Procesos · Documento interno</span>
+        <span>Acta y reparto de tareas — Reunión B2B Moto &amp; TDR</span>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===================== DATOS DE TAREAS ===================== */
+const TASKS = [
+  {id:"T-01", t:"Definir una solución para que el alta de talleres no dependa de la revisión manual (riesgo de cuello de botella).", r:"Juan / Rubén", a:"B2B Moto", p:"Media", f:"ND", dep:"Volumen de altas", base:"Pendiente"},
+  {id:"T-02", t:"Crear un vídeo explicativo del proceso de alta y uso para enviar al cliente.", r:"ND", a:"B2B Moto", p:"Baja", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-03", t:"Definir la forma de envío del comunicado masivo cumpliendo RGPD (no >3 destinatarios; revisar origen de los datos).", r:"David", a:"Transversal", p:"Alta", f:"ND", dep:"Criterio RGPD", base:"Pendiente"},
+  {id:"T-04", t:"Activar en X3 el flujo SEPT de pedidos a fabricante desde almacenes reguladores (hoy no se dispara).", r:"ND (sistemas)", a:"B2B Moto", p:"Alta", f:"ND", dep:"Config. X3 + selección de clientes", base:"Pendiente"},
+  {id:"T-05", t:"Subir las imágenes de modelos de moto y resolver que las series metidas por Juan no se muestran aún.", r:"Juan", a:"B2B Moto", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-06", t:"Añadir al aviso legal la cláusula de guardado de matrícula y avisar al delegado de protección de datos.", r:"ND (legal / Rubén)", a:"Transversal", p:"Alta", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-07", t:"Restringir las consultas de matrícula por usuario/grupo (límite configurable) y habilitar informe de uso.", r:"ND (desarrollo)", a:"B2B Moto", p:"Media", f:"Próximo mes", dep:"", base:"Pendiente"},
+  {id:"T-08", t:"Poner en producción B2B Moto: trazabilidad de vehículo y nuevos buscadores.", r:"Desarrollo", a:"B2B Moto", p:"Alta", f:"Hoy / mañana", dep:"", base:"En curso"},
+  {id:"T-09", t:"Lanzar la comunicación / newsletter a clientes de B2B Moto.", r:"Rubén / Juan", a:"B2B Moto", p:"Alta", f:"Semana que viene", dep:"T-08", base:"Pendiente"},
+  {id:"T-10", t:"Definir y enviar credenciales (usuario/contraseña) a clientes: newsletter primero, después claves.", r:"Rubén / Juan", a:"B2B Moto", p:"Media", f:"ND", dep:"T-09", base:"Pendiente"},
+  {id:"T-11", t:"Hablar con Service Next para añadir acceso a moto en NextGo con autologin.", r:"Rubén / Antonio", a:"B2B Moto", p:"Media", f:"ND", dep:"Service Next", base:"Pendiente"},
+  {id:"T-12", t:"Dar de baja la licencia de Sertec tras un mes si todo funciona (dejar julio de prueba).", r:"ND", a:"Transversal", p:"Media", f:"~1 mes (tras julio)", dep:"", base:"Pendiente"},
+  {id:"T-13", t:"Estudio de usabilidad de TDR y reestructuración conceptual de la Home y los buscadores.", r:"Equipo TDR", a:"TDR", p:"Alta", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-14", t:"Afinar Cloudflare y caché; evaluar el aumento de capacidad del servidor de TDR.", r:"Sistemas / Addis", a:"TDR", p:"Alta", f:"ND", dep:"", base:"En curso"},
+  {id:"T-15", t:"Filtrar/retirar del catálogo de coche los artículos de bajo valor que no aportan.", r:"David / Catálogo", a:"TDR", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-16", t:"Volcar la puntuación SEO a las fichas de moto y adecuar el catálogo de X3 al e-commerce.", r:"Rubén / Juan / Sistemas", a:"TDR", p:"Media", f:"ND", dep:"Cambios en X3", base:"Pendiente"},
+  {id:"T-17", t:"Continuar la indexación controlada (+300.000) y el link building.", r:"Rubén (SEO)", a:"TDR", p:"Media", f:"ND", dep:"", base:"En curso"},
+  {id:"T-18", t:"Cerrar la automatización IA del contenido de redes y reorientar el recurso a puntual.", r:"Rubén", a:"TDR", p:"Media", f:"Esta semana", dep:"", base:"En curso"},
+  {id:"T-19", t:"Desarrollar la nueva plataforma TDR desde cero (interna), por perfil de cliente.", r:"Desarrollo (Iván/Rubén/Addis)", a:"TDR", p:"Alta", f:"~2 meses", dep:"", base:"En curso"},
+  {id:"T-20", t:"Imputar horas (Asana) del equipo dedicadas a TDR para que Reynasa facture el desarrollo.", r:"Sistemas / Dirección", a:"Transversal", p:"Alta", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-21", t:"Definir la tarifa de almacenamiento/logística que Reynasa cobrará a TDR (por paquete).", r:"Dirección", a:"Transversal", p:"Alta", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-22", t:"Entregar a Service Next el documento de requerimientos (Susana) y verificar qué cumple.", r:"David / Susana", a:"Neumáticos", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-23", t:"Dar visibilidad al stock del almacén de Allovera y definir la gestión de sus pedidos.", r:"ND", a:"Neumáticos", p:"Alta", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-24", t:"Desactivar/ajustar el método de envío de Bristone (Bridgestone) por sus ficheros.", r:"Rubén / David", a:"Neumáticos", p:"Media", f:"Inmediato", dep:"", base:"Pendiente"},
+  {id:"T-25", t:"Hablar con Enrique para empujar los desarrollos que Service Next debe hacer en neumáticos.", r:"Antonio / ND", a:"Neumáticos", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-26", t:"Resolver la competencia interna en Amazon (repricing) y enviar el correo a Diego.", r:"Rubén → Diego", a:"Marketplace", p:"Alta", f:"En curso", dep:"", base:"En curso"},
+  {id:"T-27", t:"Seguimiento del cambio de precios en el 58% de los ASIN críticos de Amazon.", r:"David", a:"Marketplace", p:"Media", f:"ND", dep:"", base:"En curso"},
+  {id:"T-28", t:"Crear un cliente específico para Autodoc en Demoto (hoy usan el genérico 17906).", r:"ND", a:"Marketplace", p:"Baja", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-29", t:"Definir la estrategia de crecimiento de TDR a 2 años para reducir la dependencia de marketplaces.", r:"Equipo TDR", a:"TDR", p:"Media", f:"ND", dep:"T-19", base:"Pendiente"},
+  {id:"T-30", t:"Avisar al equipo cuando haya reuniones de marketplace para coordinar precios.", r:"Todos", a:"Marketplace", p:"Baja", f:"Recurrente", dep:"", base:"Pendiente"},
+  {id:"T-31", t:"Perfilar y cubrir el nuevo perfil del departamento (técnico/contenido con conocimiento de moto).", r:"Rubén / Esperanza", a:"Transversal", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-32", t:"Juan: elaborar la lista de tareas a delegar para poder salir a vender.", r:"Juan", a:"B2B Moto", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-33", t:"Resolver el problema que impide ver la marca MIVV en el catálogo.", r:"ND (sistemas)", a:"TDR", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+  {id:"T-34", t:"Procesar los ficheros de Galfer / Hacervice como importación masiva.", r:"Rubén", a:"TDR", p:"Baja", f:"ND", dep:"", base:"En curso"},
+  {id:"T-35", t:"Patricia + Juan: revisar y optimizar el enriquecimiento de contenido de moto (reducir el trabajo manual).", r:"Patricia / Juan / Rubén", a:"Transversal", p:"Media", f:"ND", dep:"", base:"Pendiente"},
+];
+
+const AREA_TO_MARCA = {"B2B Moto":"Reynasa","Neumáticos":"Reynasa","TDR":"TDR","Marketplace":"TDR","Transversal":"Ambas"};
+const PRIO_CLASS = {"Alta":"alta","Media":"media","Baja":"baja"};
+const STORE_KEY = "tdr_b2b_moto_done_v1";
+
+/* ---- estado persistente (con degradación) ---- */
+function loadDone(){ try{ return new Set(JSON.parse(localStorage.getItem(STORE_KEY)||"[]")); }catch(e){ return new Set(); } }
+function saveDone(set){ try{ localStorage.setItem(STORE_KEY, JSON.stringify([...set])); }catch(e){} }
+let doneSet = loadDone();
+
+const $ = s => document.querySelector(s);
+const body = $("#taskBody");
+
+/* poblar selector de responsables */
+(function fillResp(){
+  const names = [...new Set(TASKS.map(t=>t.r))].sort((a,b)=>a.localeCompare(b,'es'));
+  const sel = $("#fResp");
+  names.forEach(n=>{ const o=document.createElement("option"); o.value=n; o.textContent=n.length>26?n.slice(0,24)+"…":n; sel.appendChild(o); });
+})();
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function render(){
+  const q = $("#q").value.trim().toLowerCase();
+  const fM = $("#fMarca").value, fA = $("#fArea").value, fR = $("#fResp").value, fP = $("#fPrio").value;
+  body.innerHTML = "";
+  let shown = 0;
+
+  TASKS.forEach(t=>{
+    const marca = AREA_TO_MARCA[t.a];
+    if(fM && marca!==fM) return;
+    if(fA && t.a!==fA) return;
+    if(fR && t.r!==fR) return;
+    if(fP && t.p!==fP) return;
+    if(q){
+      const hay = (t.id+" "+t.t+" "+t.r+" "+t.a+" "+marca+" "+t.f+" "+t.dep).toLowerCase();
+      if(!hay.includes(q)) return;
+    }
+    shown++;
+    const done = doneSet.has(t.id);
+    const estado = done ? "Hecho" : t.base;
+    const stCls = done ? "st-hecho" : (t.base==="En curso" ? "st-curso" : "st-pend");
+    const bcls = marca==="Reynasa"?"b-rey":marca==="TDR"?"b-tdr":"b-amb";
+
+    const tr = document.createElement("tr");
+    tr.className = "p-"+PRIO_CLASS[t.p] + (done?" done":"");
+    tr.innerHTML = `
+      <td class="col-task">
+        <span class="tid">${t.id} <span class="brandpill ${bcls}" style="font-size:9px;padding:1px 5px">${marca.toUpperCase()}</span></span>
+        <span class="task-txt">${esc(t.t)}</span>
+        ${t.dep?`<span class="task-dep"><b>Depende de:</b> ${esc(t.dep)}</span>`:""}
+      </td>
+      <td><span class="resp ${t.r==='ND'||t.r.startsWith('ND')?'nd':''}">${esc(t.r)}</span></td>
+      <td><span class="area">${esc(t.a)}</span></td>
+      <td><span class="prio"><span class="dot ${PRIO_CLASS[t.p]}"></span>${t.p}</span></td>
+      <td><span class="fecha ${t.f==='ND'?'nd':''}">${esc(t.f)}</span></td>
+      <td>
+        <label class="status ${stCls}">
+          <input type="checkbox" ${done?"checked":""} data-id="${t.id}" aria-label="Marcar ${t.id} como hecho">
+          <span class="lab">${estado}</span>
+        </label>
+      </td>`;
+    body.appendChild(tr);
+  });
+
+  $("#emptyRow").style.display = shown? "none":"block";
+  $("#taskCount").textContent = shown===TASKS.length ? `${TASKS.length} tareas` : `${shown} de ${TASKS.length}`;
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = TASKS.length, done = doneSet.size;
+  const pct = Math.round(done/total*100);
+  $("#doneCount").textContent = done;
+  $("#totalCount").textContent = total;
+  $("#progBar").style.width = pct+"%";
+  $("#progPct").textContent = pct+"%";
+}
+
+/* eventos */
+body.addEventListener("change", e=>{
+  if(e.target.matches("input[type=checkbox]")){
+    const id = e.target.dataset.id;
+    if(e.target.checked) doneSet.add(id); else doneSet.delete(id);
+    saveDone(doneSet);
+    render();
+  }
+});
+["q","fMarca","fArea","fResp","fPrio"].forEach(id=> $("#"+id).addEventListener("input", render));
+$("#resetBtn").addEventListener("click", ()=>{ $("#q").value=""; ["fMarca","fArea","fResp","fPrio"].forEach(id=>$("#"+id).value=""); render(); });
+$("#printBtn").addEventListener("click", ()=>{ document.querySelectorAll("details.item").forEach(d=>d.open=true); window.print(); });
+
+/* nav activa por scroll */
+const navLinks = [...document.querySelectorAll('.nav a')];
+const secs = navLinks.map(a=>document.querySelector(a.getAttribute('href')));
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      const id = "#"+en.target.id;
+      navLinks.forEach(a=>a.classList.toggle('is-active', a.getAttribute('href')===id));
+    }
+  });
+},{rootMargin:"-30% 0px -65% 0px"});
+secs.forEach(s=>s&&obs.observe(s));
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('sidebar').classList.remove('open')));
+
+render();
+</script>
+</body>
+</html>
